@@ -1,0 +1,21 @@
+
+
+import 'package:flutter_optical_storage/http/base_api.dart';
+import 'package:flutter_optical_storage/service/custom_service.dart';
+
+class CommonApi extends BaseApi {
+  @override
+  String path() {
+    return "/SolarWeb/WeAppServlet";
+  }
+
+  @override
+  RequestMethod method() {
+    return RequestMethod.get;
+  }
+
+  @override
+  String serviceKey() {
+    return customServiceKey;
+  }
+}
