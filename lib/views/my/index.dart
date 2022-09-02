@@ -33,22 +33,23 @@ class _MyPageState extends State<MyPage> {
     AppLocalizations i18ns = AppLocalizations.of(context);
     return Column(
       children: [
-        MyHeaderWidget(account: account),
-        MyItemWidget(icon: Icons.info_outline, title: i18ns.setting1, onTap: () => Navigator.pushReplacementNamed(context, Routes.about)),
-        MyItemWidget(icon: Icons.lock_outline, title: i18ns.setting2, onTap: () => Navigator.pushReplacementNamed(context, Routes.changePassword)),
-        MyItemWidget(icon: Icons.logout, title: i18ns.setting3, onTap: () async {
-          Navigator.pushReplacementNamed(context, Routes.login);
+        _MyHeaderWidget(account: account),
+        _MyItemWidget(icon: Icons.info_outline, title: i18ns.setting1, onTap: () => Navigator.pushReplacementNamed(context, Routes.about)),
+        _MyItemWidget(icon: Icons.lock_outline, title: i18ns.setting2, onTap: () => Navigator.pushReplacementNamed(context, Routes.changePassword)),
+        _MyItemWidget(icon: Icons.logout, title: i18ns.setting3, onTap: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.clear();
+           await prefs.clear();
+          // ignore: use_build_context_synchronously
+          Navigator.pushReplacementNamed(context, Routes.login);
         })
       ],
     );
   }
 }
 
-class MyHeaderWidget extends StatelessWidget {
+class _MyHeaderWidget extends StatelessWidget {
   final String account;
-  const MyHeaderWidget({Key? key, required this.account}) : super(key: key);
+  const _MyHeaderWidget({Key? key, required this.account}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -79,16 +80,15 @@ class MyHeaderWidget extends StatelessWidget {
 }
 
 
-class MyItemWidget extends StatelessWidget {
+class _MyItemWidget extends StatelessWidget {
   final String title;
   final IconData icon;
   final GestureTapCallback onTap;
-  const MyItemWidget({Key? key, required this.title, required this.icon, required this.onTap}) : super(key: key);
+  const _MyItemWidget({Key? key, required this.title, required this.icon, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return InkWell(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(12),

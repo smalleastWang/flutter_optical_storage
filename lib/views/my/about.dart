@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_optical_storage/api/common_api.dart';
+import 'package:flutter_optical_storage/api/my.dart';
 import 'package:flutter_optical_storage/i18n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 
@@ -9,8 +12,32 @@ extension FixAutoLines on String {
   }
 }
 
-class AboutPage extends StatelessWidget {
+
+class AboutPage extends StatefulWidget {
   const AboutPage({Key? key}) : super(key: key);
+
+  @override
+  State<AboutPage> createState() => _AboutPageState();
+}
+
+class _AboutPageState extends State<AboutPage> {
+  String version = '';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getVersion();
+  }
+
+  getVersion() async {
+    String? solarmonitor = await MyApi.fetchVersionApi('version');
+    if (solarmonitor != null) {
+      setState(() {
+        version = solarmonitor;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +54,12 @@ class AboutPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 20),
               alignment: Alignment.center,
               child: Column(
-                children: const [
-                  Image(
+                children: [
+                  const Image(
                     width: 100,
                     image: AssetImage("assets/images/logo.png"),
                   ),
-                  Text('solarmonitor：1.8.0')
+                  Text('solarmonitor：$version')
                 ],
               ),
             ),

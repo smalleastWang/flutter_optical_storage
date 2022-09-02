@@ -1,5 +1,5 @@
 name: flutter_optical_storage
-description: A new Flutter project.
+description: 51光储
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -44,6 +44,8 @@ dependencies:
   shared_preferences: ^2.0.15
   crypto: ^3.0.2
   fluttertoast: ^8.0.9
+  flutter_easyloading: ^3.0.5
+  percent_indicator: ^4.2.2
 
 dev_dependencies:
   flutter_test:

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_optical_storage/api/common_api.dart';
+import 'package:flutter_optical_storage/api/my.dart';
 import 'package:flutter_optical_storage/i18n/app_localizations.dart';
 import 'package:flutter_optical_storage/models/api/login_model.dart';
+import 'package:flutter_optical_storage/models/api/user_info.dart';
 import 'package:flutter_optical_storage/router/public.dart';
 import 'package:flutter_optical_storage/router/routes.dart';
+import 'package:flutter_optical_storage/utils/styles.dart';
+import 'package:flutter_optical_storage/widgets/loading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,43 +24,47 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _pwdController = TextEditingController();
   final GlobalKey _formKey = GlobalKey<FormState>();
 
+  bool isShow = false; // 0 获取状态中 1 未登录 2 已登录
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    init();
+  }
+
+  init() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
+    if (userId == null || userId == '') {
+      setState(() {
+        isShow = true;
+      });
+      return;
+    }
+    // ignore: use_build_context_synchronously
+    Navigator.pushReplacementNamed(context, Routes.home);
+  }
+  
   handlesSubmit() async {
-    //验证通过提交数据
-    Map<String, dynamic> query = {
-      "action": "login",
-      "account": _unameController.text,
-      "passwd": sha1.convert(utf8.encode(_pwdController.text)).toString()
-    };
-    CommonApi().request(
-      query: query,
-      successCallBack: (data) async {
-        LoginModel loginRes = LoginModel.fromJson(data);
-        if (loginRes.err == 0) {
-          if (loginRes.dat!.userid != null) {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString('account', _unameController.text);
-            await prefs.setString('userId', loginRes.dat!.userid ?? '');
-            // ignore: use_build_context_synchronously
-            Navigator.pushReplacementNamed(context, Routes.home);
-          } else {
-            Fluttertoast.showToast(msg: '接口返回userId为空');
-          }
-        } else if (loginRes.err == 23) {
-          return Fluttertoast.showToast(msg: '帐号被锁定');
-        } else if (loginRes.err == 8) {
-          return Fluttertoast.showToast(msg: '用户名或密码错误');
-        } else if (loginRes.err == 2) {
-          return Fluttertoast.showToast(msg: '帐号不存在');
-        } else {
-          return Fluttertoast.showToast(msg: '未知错误');
-        }
-      },
-      errorCallBack: (error) {},
-    );
+    LoginDatModel dat = await MyApi.fetchLoginApi({ "account": _unameController.text, "passwd": sha1.convert(utf8.encode(_pwdController.text)).toString()});
+    if (dat.userid != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('account', _unameController.text);
+      await prefs.setString('userId', dat.userid ?? '');
+      UserInfoModel userInfo = await MyApi.fetchUserInfoApi();
+      prefs.setString('userInfo', json.encode(userInfo));
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacementNamed(context, Routes.home);
+    } else {
+      Fluttertoast.showToast(msg: '接口返回userId为空');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations i18ns = AppLocalizations.of(context);
+    if (!isShow) return const LoadingWidget();
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).login),
@@ -74,24 +82,31 @@ class _LoginPageState extends State<LoginPage> {
                   image: AssetImage("assets/images/main.png")
                 ),
               ),
-              TextFormField(
-                autofocus: true,
-                controller: _unameController,
-                decoration: const InputDecoration(
-                  labelText: "帐号",
-                  hintText: "手机号/用户名/邮箱",
-                  prefixIcon: Icon(Icons.person)
-                ),
-                validator: (v) {
-                  return v!.trim().isNotEmpty ? null : "用户名不能为空";
-                },
+              Padding(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: TextFormField(
+                  autofocus: true,
+                  controller: _unameController,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 6),
+                    border: const OutlineInputBorder(),
+                    // labelText: i18ns.logNote,
+                    hintText: i18ns.logNote,
+                    prefixIcon: const Icon(Icons.person)
+                  ),
+                  validator: (v) {
+                    return v!.trim().isNotEmpty ? null : "用户名不能为空";
+                  },
+                )
               ),
               TextFormField(
                 controller: _pwdController,
-                decoration: const InputDecoration(
-                  labelText: "密码",
-                  hintText: "登录密码",
-                  prefixIcon: Icon(Icons.lock)
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+                  border: const OutlineInputBorder(),
+                  // labelText: "密码",
+                  hintText: i18ns.loginNote2,
+                  prefixIcon: const Icon(Icons.lock)
                 ),
                 obscureText: true,
                 //校验密码
@@ -106,9 +121,9 @@ class _LoginPageState extends State<LoginPage> {
                   children: <Widget>[
                     Expanded(
                       child: ElevatedButton(
-                        child: const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Text("登录", style: TextStyle(fontSize: 18)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(i18ns.login, style: const TextStyle(fontSize: 18)),
                         ),
                         onPressed: () async {
                           // 通过_formKey.currentState 获取FormState后，
@@ -127,6 +142,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+      resizeToAvoidBottomInset: false,
     );
   }
 }

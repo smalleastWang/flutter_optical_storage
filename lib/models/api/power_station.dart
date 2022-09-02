@@ -1,4 +1,4 @@
-class PowerStation {
+class PowerStationModel {
   String? address;
   String? designCompany;
   int? id;
@@ -22,7 +22,7 @@ class PowerStation {
   int? type;
   int? viewID;
 
-  PowerStation(
+  PowerStationModel(
       {this.address,
       this.designCompany,
       this.id,
@@ -46,7 +46,7 @@ class PowerStation {
       this.type,
       this.viewID});
 
-  PowerStation.fromJson(Map<String, dynamic> json) {
+  PowerStationModel.fromJson(Map<String, dynamic> json) {
     address = json['address'];
     designCompany = json['designCompany'];
     id = json['id'];

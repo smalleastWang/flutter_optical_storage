@@ -1,8 +1,10 @@
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_optical_storage/api/common_api.dart';
+import 'package:flutter_optical_storage/api/my.dart';
 import 'package:flutter_optical_storage/i18n/app_localizations.dart';
 import 'package:flutter_optical_storage/router/public.dart';
+import 'package:flutter_optical_storage/router/routes.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,38 +29,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     if (prefs.getString('account') == null) return Fluttertoast.showToast(msg: '用户名不能为空');
     //验证通过提交数据
     Map<String, dynamic> query = {
-      "action": "mdpwd",
       "userid": prefs.get('userId'),
       "user": prefs.get('account'),
       "oldpwd": sha1.convert(utf8.encode(_oldController.text)).toString(),
       "newpwd": sha1.convert(utf8.encode(_pwdController.text)).toString()
     };
-    CommonApi().request(
-      query: query,
-      successCallBack: (data) async {
-        LoginModel loginRes = LoginModel.fromJson(data);
-        if (loginRes.err == 0) {
-          if (loginRes.dat!.userid != null) {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString('account', _unameController.text);
-            await prefs.setString('userId', loginRes.dat!.userid ?? '');
-            // ignore: use_build_context_synchronously
-            Navigator.pushReplacementNamed(context, Routes.home);
-          } else {
-            Fluttertoast.showToast(msg: '接口返回userId为空');
-          }
-        } else if (loginRes.err == 23) {
-          return Fluttertoast.showToast(msg: '帐号被锁定');
-        } else if (loginRes.err == 8) {
-          return Fluttertoast.showToast(msg: '用户名或密码错误');
-        } else if (loginRes.err == 2) {
-          return Fluttertoast.showToast(msg: '帐号不存在');
-        } else {
-          return Fluttertoast.showToast(msg: '未知错误');
-        }
-      },
-      errorCallBack: (error) {},
-    );
+    await MyApi.fetchChangePwdApi('mdpwd', query);
+    // ignore: use_build_context_synchronously
+    Navigator.pushReplacementNamed(context, Routes.my);
   }
 
   @override
@@ -82,6 +60,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   hintText: "请输入原密码",
                   prefixIcon: Icon(Icons.lock)
                 ),
+                obscureText: true,
                 validator: (v) {
                   return v!.trim().length > 5 ? null : "密码不能少于6位";
                 },

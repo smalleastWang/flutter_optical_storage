@@ -11,5 +11,5 @@ export 'package:flutter_optical_storage/views/alert/index.dart';
 
 export 'package:flutter_optical_storage/views/my/index.dart';
 export 'package:flutter_optical_storage/views/my/login.dart';
-export 'package:flutter_optical_storage/views/my/change_password.dart';
+export 'package:flutter_optical_storage/views/my/change_pwd.dart';
 export 'package:flutter_optical_storage/views/my/about.dart';

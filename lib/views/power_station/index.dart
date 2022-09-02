@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_optical_storage/api/common_api.dart';
+import 'package:flutter_optical_storage/api/power_station.dart';
 import 'package:flutter_optical_storage/models/api/power_station.dart';
 import 'package:flutter_optical_storage/widgets/power_station/list_item.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,39 +16,20 @@ class PowerStationPage extends StatefulWidget {
 
 class _PowerStationPageState extends State<PowerStationPage> {
 
-  List<PowerStation> powerStationList = [];
+  List<PowerStationModel> powerStationList = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getList();
-    
+    initList();
   }
 
-  getList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userId = prefs.getString('userId');
-    if (userId == null) {
-      Fluttertoast.showToast(msg: 'userId为空');
-      return;
-    }
-    Map<String, dynamic> query = {
-      "action": "plants",
-      "userid": "82",
-    };
-    CommonApi().request(
-      query: query,
-      successCallBack: (res) {
-        var data = res['dat'];
-        List<PowerStation> list = [];
-        data.forEach((item) => list.add(PowerStation.fromJson(item)));
-        setState(() {
-          powerStationList = list;
-        });
-      },
-      errorCallBack: (error) {},
-    );
+  initList() async {
+    List<PowerStationModel> data = await PowerStationApi.fetchListApi('plants');
+    setState(() {
+      powerStationList = data;
+    });
   }
 
   @override

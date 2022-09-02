@@ -1,4 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter_optical_storage/router/routes.dart';
+import 'package:flutter_optical_storage/utils/sp_util.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'service.dart';
 import 'package:dio/dio.dart';
 import 'service_manager.dart';
@@ -18,12 +23,13 @@ class BaseApi {
     return RequestMethod.get;
   }
 
-  void request(
+  Future request(
       {Map<String, dynamic>? query,
       Map<String, dynamic>? body,
       Map<String, dynamic>? header,
-      required Function successCallBack,
-      required Function errorCallBack}) async {
+      Function? successCallBack,
+      Function? errorCallBack}) async {
+    String? userId = SpUtil.prefs?.getString('userId') ?? '82';
     //获取到对应的服务
     Service service;
     if (ServiceManager().serviceMap.containsKey(serviceKey())) {
@@ -36,6 +42,10 @@ class BaseApi {
     Response? response;
     Map<String, dynamic>? queryParams = {};
     var globalQueryParams = service.serviceQuery();
+    // 添加 userId
+    if (userId != null) {
+      queryParams.addAll({"userid": userId});
+    }
     if (globalQueryParams != null) {
       queryParams.addAll(globalQueryParams);
     }
@@ -86,21 +96,31 @@ class BaseApi {
         default:
       }
     } on DioError catch (error) {
-      errorCallBack(service.errorFactory(error));
+      if (errorCallBack != null) {
+        errorCallBack(service.errorFactory(error));
+      }
+      throw Exception(service.errorFactory(error));
     }
     if (response != null && response.data != null) {
       // String dataStr = json.encode(response.data);
       // Map<String, dynamic> dataMap = json.decode(response.data);
-      // Map<String, dynamic> dataMap = json.decode(response.data);
-      dynamic dataMap = json.decode(response.data);
-      if (dataMap is List) {
-        dataMap = <String, dynamic>{
-          'dat': dataMap
-        };
+      // dataMap = service.responseFactory(dataMap);
+      // if (successCallBack != null) {
+      //   successCallBack(dataMap);
+      // }
+      // dynamic dataMap = json.decode(response.data);
+      // if (dataMap is List) {
+      //   dataMap = <String, dynamic>{
+      //     'dat': dataMap
+      //   };
+      // }
+
+      dynamic data = json.decode(response.data);
+      // dataMap = service.responseFactory(dataMap);
+      if (successCallBack != null) {
+        successCallBack(data);
       }
-      
-      dataMap = service.responseFactory(dataMap);
-      successCallBack(dataMap);
+      return data;
     }
   }
 }

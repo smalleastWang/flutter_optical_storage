@@ -1,13 +1,13 @@
 class LoginModel {
   int? err;
-  Dat? dat;
+  LoginDatModel? dat;
 
   LoginModel({this.err, this.dat});
 
   LoginModel.fromJson(Map<String, dynamic> json) {
     err = json['err'];
     if (json['dat'] is Map) {
-      dat = Dat.fromJson(json['dat']);
+      dat = LoginDatModel.fromJson(json['dat']);
     }
   }
 
@@ -21,16 +21,16 @@ class LoginModel {
   }
 }
 
-class Dat {
+class LoginDatModel {
   String? userid;
   int? role;
   String? pwdsha1;
   String? token;
   int? expire;
 
-  Dat({this.userid, this.role, this.pwdsha1, this.token, this.expire});
+  LoginDatModel({this.userid, this.role, this.pwdsha1, this.token, this.expire});
 
-  Dat.fromJson(Map<String, dynamic> json) {
+  LoginDatModel.fromJson(Map<String, dynamic> json) {
     userid = json['userid'];
     role = json['role'];
     pwdsha1 = json['pwdsha1'];

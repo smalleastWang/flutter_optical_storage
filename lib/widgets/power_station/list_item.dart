@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_optical_storage/models/api/power_station.dart';
 
 class PowerStationItemWidget extends StatelessWidget {
-  final PowerStation data;
+  final PowerStationModel data;
   const PowerStationItemWidget({Key? key, required this.data}) : super(key: key);
 
   Widget rowItem (String label, String? value) {
