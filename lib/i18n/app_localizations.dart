@@ -10,7 +10,7 @@ class AppLocalizations {
   static AppLocalizations of(BuildContext context) {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
-
+  String get languageCode => locale.languageCode;
   String get appName => I18n.localizations[locale.languageCode]!["appName"]!;
   String get logNote => I18n.localizations[locale.languageCode]!["logNote"]!;
   String get passwdNote => I18n.localizations[locale.languageCode]!["passwdNote"]!;

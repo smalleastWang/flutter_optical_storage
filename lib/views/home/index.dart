@@ -23,16 +23,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     initData();
+    super.initState();
   }
   initData() {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       // int? rolepower = prefs.getInt('rolepower') ?? 688;
       photovoltaicData = HomeApi.fetchPhotovoltaicApi();
-      energyData = HomeApi.fetchEnergyApi();
+      energyData = HomeApi.fetchEnergyApi({});
       // if (rolepower&(1<<9) == 0) { // 光伏
       //   photovoltaicData = HomeApi.fetchPhotovoltaicApi();
       // } else { // 储能
@@ -61,20 +60,20 @@ class _HomePageState extends State<HomePage> {
       );
     } else { // 储能
       return FutureBuilder<HomeEnergyModel>(
-          future: energyData,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return const LoadingWidget();
-            HomeEnergyModel data = snapshot.data!;
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  HomeOverviewWidget(data),
-                  HomeGridWidget(data),
-                  HomeChartWidget(data),
-                ],
-              )
-            );
-          }
+        future: energyData,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const LoadingWidget();
+          HomeEnergyModel data = snapshot.data!;
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                HomeOverviewWidget(data),
+                HomeGridWidget(data),
+                HomeChartWidget(data),
+              ],
+            )
+          );
+        }
       );
     }
   }

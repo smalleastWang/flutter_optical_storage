@@ -23,7 +23,7 @@ class BaseApi {
     return RequestMethod.get;
   }
 
-  Future request(
+  Future<T> request<T>(
       {Map<String, dynamic>? query,
       Map<String, dynamic>? body,
       Map<String, dynamic>? header,
@@ -114,13 +114,14 @@ class BaseApi {
       //     'dat': dataMap
       //   };
       // }
-
-      dynamic data = json.decode(response.data);
+      if (response.data == '') throw Exception('接口返回为空');
+      T data = json.decode(response.data);
       // dataMap = service.responseFactory(dataMap);
       if (successCallBack != null) {
         successCallBack(data);
       }
       return data;
     }
+    throw Exception('接口返回为空');
   }
 }

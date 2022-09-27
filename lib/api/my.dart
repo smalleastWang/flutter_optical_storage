@@ -9,7 +9,7 @@ class MyApi {
   // 登录接口
   static Future<LoginDatModel> fetchLoginApi(Map<String, dynamic> params) async {
     //验证通过提交数据
-    Map<String, dynamic> query = { "action": 'login' };
+    Map<String, dynamic> query = {'action': 'login'};
     query.addAll(params);
     Map<String, dynamic> resMap = await CommonApi().request(query: query);
     LoginModel res = LoginModel.fromJson(resMap);
@@ -33,9 +33,9 @@ class MyApi {
   }
 
   // 修改密码接口
-  static Future<void> fetchChangePwdApi(String action, Map<String, dynamic> params) async {
+  static Future<void> fetchChangePwdApi(Map<String, dynamic> params) async {
     //验证通过提交数据
-    Map<String, dynamic> query = { "action": action };
+    Map<String, dynamic> query = {'action': 'mdpwd'};
     query.addAll(params);
     Map<String, dynamic> res = await CommonApi().request(query: query);
     if (res['err'] == 11) {
@@ -53,9 +53,9 @@ class MyApi {
   }
 
   // 获取版本
-  static Future<String?> fetchVersionApi(String action) async {
+  static Future<String?> fetchVersionApi() async {
     //验证通过提交数据
-    Map<String, dynamic> query = { "action": action };
+    Map<String, dynamic> query = {'action': 'version'};
     Map<String, dynamic> res = await CommonApi().request(query: query);
     if (res['err'] != 0) {
       Fluttertoast.showToast(msg: '版本获取失败');
@@ -70,7 +70,7 @@ class MyApi {
   // 获取用户信息
   static Future<UserInfoModel> fetchUserInfoApi() async {
     //验证通过提交数据
-    Map<String, dynamic> query = { "action": 'getUserInfo' };
+    Map<String, dynamic> query = {'action': 'getUserInfo'};
     Map<String, dynamic> data = await CommonApi().request(query: query);
     return UserInfoModel.fromJson(data);
   }

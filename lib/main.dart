@@ -10,13 +10,22 @@ import 'package:flutter_optical_storage/router/application.dart';
 import 'package:flutter_optical_storage/router/public.dart';
 import 'package:flutter_optical_storage/router/routes.dart';
 import 'package:flutter_optical_storage/service/custom_service.dart';
+import 'package:flutter_optical_storage/store/power_station.dart';
 import 'package:flutter_optical_storage/utils/sp_util.dart';
+import 'package:provider/provider.dart';
 
 import 'http/service_manager.dart';
 
 void main() {
   // realRunApp();
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => PowerStationStore()),
+      ],
+      child: const MyApp(),
+    ),
+  );
   SpUtil.getInstance();
   ServiceManager().registeredService(CustomService());
 }
@@ -40,10 +49,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      onGenerateRoute: Application.router!.generator,
+      onGenerateRoute: Application.router.generator,
       home: const LoginPage(),
+      // home: const PowerStationDetailPage(),
       builder: EasyLoading.init(),
-      // home: const LoginPage(),
     );
   }
 }
@@ -62,10 +71,10 @@ class _IndexPageState extends State<IndexPage> {
 
   @override
   void initState() {
-    super.initState();
     setState(() {
       if (_currentIndex != widget.currentIndex) _currentIndex = widget.currentIndex;
     });
+    super.initState();
   }
 
   /// Tab 切换

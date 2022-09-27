@@ -1,12 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_optical_storage/router/public.dart';
 import 'package:flutter_optical_storage/router/route_handles.dart';
-import 'package:flutter_optical_storage/utils/sp_util.dart';
 
 class Routes {
   static String login = '/';
   static String home = "/home";
 
   static String powerStation = "/power-station";
+  static String powerStationDetail = "/power-station/detail";
+  static String powerStationDetailDeviceInfo = "/power-station/detail/device-info";
 
   static String alert = '/alert';
 
@@ -18,15 +20,14 @@ class Routes {
     
     router.notFoundHandler = emptyHandler;
 
-    router.define(login, handler: loginHandler);
 
     router.define(home, handler: homeHandler);
+    // 电站二级页面
+    router.define(powerStationDetail, handler: powerStationDetailHandler);
+    router.define(powerStationDetailDeviceInfo, handler: powerStationDetailDeviceInfoHandler);
 
-    // router.define(powerStation, handler: powerStationHandler);
-
-    // router.define(alert, handler: alertHandler);
-
-    // router.define(my, handler: myHandler);
+    // 我的子页面
+    router.define(login, handler: loginHandler);
     router.define(about, handler: aboutHandler);
     router.define(changePassword, handler: changePasswordHandler);
   }

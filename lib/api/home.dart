@@ -7,17 +7,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 class HomeApi {
   // 光伏
   static Future<HomePhotovoltaicModel> fetchPhotovoltaicApi() async {
-    Map<String, dynamic> query = { "action": 'plantStatistic' };
+    Map<String, dynamic> query = {'action': 'plantStatistic'};
     Map<String, dynamic> data = await CommonApi().request(query: query);
     return HomePhotovoltaicModel.fromJson(data);
   }
 
   // 储能
-  static Future<HomeEnergyModel> fetchEnergyApi() async {
+  static Future<HomeEnergyModel> fetchEnergyApi(Map<String, dynamic> params) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? officeIDs = prefs.getString('officeIDs') ?? '296,314,315';
-    Map<String, dynamic> query = { "action": 'plantStorageStatistic' };
+    Map<String, dynamic> query = {'action': 'plantStorageStatistic'};
     query['pid'] = officeIDs;
+    query.addAll(params);
     Map<String, dynamic> data = await EnergyApi().request(query: query);
     return HomeEnergyModel.fromJson(data);
   }

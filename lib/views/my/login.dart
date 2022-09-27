@@ -7,7 +7,6 @@ import 'package:flutter_optical_storage/models/api/login_model.dart';
 import 'package:flutter_optical_storage/models/api/user_info.dart';
 import 'package:flutter_optical_storage/router/public.dart';
 import 'package:flutter_optical_storage/router/routes.dart';
-import 'package:flutter_optical_storage/utils/styles.dart';
 import 'package:flutter_optical_storage/widgets/loading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,9 +27,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     init();
+    super.initState();
   }
 
   init() async {
@@ -54,6 +52,7 @@ class _LoginPageState extends State<LoginPage> {
       await prefs.setString('userId', dat.userid ?? '');
       UserInfoModel userInfo = await MyApi.fetchUserInfoApi();
       prefs.setString('userInfo', json.encode(userInfo));
+      Fluttertoast.showToast(msg: '登录成功');
       // ignore: use_build_context_synchronously
       Navigator.pushReplacementNamed(context, Routes.home);
     } else {

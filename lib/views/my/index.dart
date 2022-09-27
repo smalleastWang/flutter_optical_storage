@@ -16,9 +16,8 @@ class _MyPageState extends State<MyPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     getUserInfo();
+    super.initState();
   }
 
   getUserInfo() async {
@@ -34,13 +33,13 @@ class _MyPageState extends State<MyPage> {
     return Column(
       children: [
         _MyHeaderWidget(account: account),
-        _MyItemWidget(icon: Icons.info_outline, title: i18ns.setting1, onTap: () => Navigator.pushReplacementNamed(context, Routes.about)),
-        _MyItemWidget(icon: Icons.lock_outline, title: i18ns.setting2, onTap: () => Navigator.pushReplacementNamed(context, Routes.changePassword)),
+        _MyItemWidget(icon: Icons.info_outline, title: i18ns.setting1, onTap: () => Navigator.pushNamed(context, Routes.about)),
+        _MyItemWidget(icon: Icons.lock_outline, title: i18ns.setting2, onTap: () => Navigator.pushNamed(context, Routes.changePassword)),
         _MyItemWidget(icon: Icons.logout, title: i18ns.setting3, onTap: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
            await prefs.clear();
           // ignore: use_build_context_synchronously
-          Navigator.pushReplacementNamed(context, Routes.login);
+          Navigator.pushNamed(context, Routes.login);
         })
       ],
     );

@@ -25,13 +25,12 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     getVersion();
+    super.initState();
   }
 
   getVersion() async {
-    String? solarmonitor = await MyApi.fetchVersionApi('version');
+    String? solarmonitor = await MyApi.fetchVersionApi();
     if (solarmonitor != null) {
       setState(() {
         version = solarmonitor;

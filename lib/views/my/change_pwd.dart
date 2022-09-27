@@ -34,7 +34,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       "oldpwd": sha1.convert(utf8.encode(_oldController.text)).toString(),
       "newpwd": sha1.convert(utf8.encode(_pwdController.text)).toString()
     };
-    await MyApi.fetchChangePwdApi('mdpwd', query);
+    await MyApi.fetchChangePwdApi(query);
     // ignore: use_build_context_synchronously
     Navigator.pushReplacementNamed(context, Routes.my);
   }

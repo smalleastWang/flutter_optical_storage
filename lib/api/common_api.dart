@@ -37,3 +37,36 @@ class EnergyApi extends BaseApi {
     return customServiceKey;
   }
 }
+class ConfigApi extends BaseApi {
+  @override
+  String path() {
+    return "/SolarWeb/ConfigServlet";
+  }
+
+  @override
+  RequestMethod method() {
+    return RequestMethod.get;
+  }
+
+  @override
+  String serviceKey() {
+    return customServiceKey;
+  }
+}
+
+class HistoryServletApi extends BaseApi {
+  @override
+  String path() {
+    return "/SolarWeb/HistoryServlet";
+  }
+
+  @override
+  RequestMethod method() {
+    return RequestMethod.get;
+  }
+
+  @override
+  String serviceKey() {
+    return customServiceKey;
+  }
+}
