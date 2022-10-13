@@ -114,7 +114,16 @@ class BaseApi {
       //     'dat': dataMap
       //   };
       // }
-      if (response.data == '') throw Exception('接口返回为空');
+      
+      if (response.data == '') {
+        if (T is List) {
+          return json.decode(response.data ?? '[]');
+        }
+        if (T is Map) {
+          return json.decode(response.data ?? '{}');
+        }
+        throw Exception('接口返回为空');
+      }
       T data = json.decode(response.data);
       // dataMap = service.responseFactory(dataMap);
       if (successCallBack != null) {

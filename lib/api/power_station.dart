@@ -14,7 +14,7 @@ class PowerStationApi {
     //验证通过提交数据
     Map<String, dynamic> query = {'action': 'plants'};
     query.addAll(params);
-    List<dynamic> data = await CommonApi().request(query: query);
+    List<dynamic> data = await CommonApi().request<List<dynamic>>(query: query);
     List<PowerStationModel> list = [];
     for (var item in data) {
       list.add(PowerStationModel.fromJson(item));
@@ -99,7 +99,7 @@ class PowerStationApi {
     List<dynamic> data = await CommonApi().request(query: query);
     List<Map<String, Object>> list = [];
     for (var item in data) {
-      list.add({'key': item['key'].split(' ')[1], 'val': item['val']});
+      list.add({'key': item['key'].split(' ').last, 'val': item['val']});
     }
     return list;
   }

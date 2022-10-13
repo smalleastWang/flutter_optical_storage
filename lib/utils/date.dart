@@ -87,6 +87,10 @@ String formatToDayStr([DateTime? date]) {
 String formatToTimeStr([DateTime? date]) {
   return formatDate(date ?? DateTime.now(), ['yyyy', '-', 'mm', '-', 'dd', ' ', 'hh', ':', 'mm', ':', 'ss']);
 }
+
+String formatToOnlyTimeStr([DateTime? date]) {
+  return formatDate(date ?? DateTime.now(), ['hh', ':', 'mm', ':', 'ss']);
+}
  
  
 //      ///使用：

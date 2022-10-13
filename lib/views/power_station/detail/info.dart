@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_optical_storage/api/power_station.dart';
+import 'package:flutter_optical_storage/i18n/app_localizations.dart';
 import 'package:flutter_optical_storage/models/api/power_station/power_station.dart';
 import 'package:flutter_optical_storage/models/api/power_station/weather_model.dart';
 import 'package:flutter_optical_storage/widgets/loading.dart';
@@ -37,6 +38,7 @@ class _PowerStationInfoState extends State<PowerStationInfo> {
   @override
   Widget build(BuildContext context) {
     if (nowWeather == null || nowWeather!.weatherPic == null || f1 == null || detail == null) return const LoadingWidget();
+    AppLocalizations i18ns = AppLocalizations.of(context);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -71,7 +73,7 @@ class _PowerStationInfoState extends State<PowerStationInfo> {
                         Container(
                           height: 32,
                           alignment: Alignment.bottomLeft,
-                          child: Text('${nowWeather!.weather!}(实时)'),
+                          child: Text('${nowWeather!.weather!}(${i18ns.temp1Str2})'),
                         ),
                       ],
                     ),
@@ -79,7 +81,7 @@ class _PowerStationInfoState extends State<PowerStationInfo> {
                     Text(nowWeather!.windDirection! + nowWeather!.windPower!),
                   ],
                 ),
-                Text('更新时间: ${nowWeather!.temperatureTime!}'),
+                Text('${i18ns.temp1Str1}: ${nowWeather!.temperatureTime!}'),
               ],
             ),
           ),
@@ -87,21 +89,21 @@ class _PowerStationInfoState extends State<PowerStationInfo> {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
             decoration: const BoxDecoration(color: Color(0xFFE8F5E9)),
-            child: Row(children: const [Text('电站信息', style: TextStyle(fontSize: 16))]),
+            child: Row(children: [Text(i18ns.temp1Str3, style: const TextStyle(fontSize: 16))]),
           ),
-          _RowInfo(label: '电站名称', value: detail!.name!, color: 0xFFF5F5F5),
-          _RowInfo(label: '安装日期', value: detail!.installTime!),
-          _RowInfo(label: '装机容量', value: '${detail!.nominalPower}kW', color: 0xFFF5F5F5),
-          _RowInfo(label: '设计厂商', value: detail!.designCompany!),
-          _RowInfo(label: '所在地址', value: detail!.address!, color: 0xFFF5F5F5),
-          _RowInfo(label: '时区', value: '(GMT +${int.parse(detail!.timezone!) < 10 ? '0' : ''}${detail!.timezone}:00)'),
-          _RowInfo(label: '经度', value: detail!.lon!, color: 0xFFF5F5F5),
-          _RowInfo(label: '纬度', value: detail!.lat!),
-          _RowInfo(label: '资金收益', value: detail!.profitMoney!, color: 0xFFF5F5F5),
-          _RowInfo(label: '币种', value: detail!.moneyType!),
-          _RowInfo(label: '节省标准煤(kg)', value: detail!.profitCoal!, color: 0xFFF5F5F5),
-          _RowInfo(label: '二氧化碳减排(kg)', value: detail!.profitCo2!),
-          _RowInfo(label: '二氧化硫减排(kg)', value: detail!.profitSo2!, color: 0xFFF5F5F5),
+          _RowInfo(label: i18ns.temp1Str4, value: detail!.name!, color: 0xFFF5F5F5),
+          _RowInfo(label: i18ns.temp1Str5, value: detail!.installTime!),
+          _RowInfo(label: i18ns.temp1Str6, value: '${detail!.nominalPower}kW', color: 0xFFF5F5F5),
+          _RowInfo(label: i18ns.temp1Str7, value: detail!.designCompany!),
+          _RowInfo(label: i18ns.temp1Str8, value: detail!.address!, color: 0xFFF5F5F5),
+          _RowInfo(label: i18ns.temp1Str9, value: '(GMT +${int.parse(detail!.timezone!) < 10 ? '0' : ''}${detail!.timezone}:00)'),
+          _RowInfo(label: i18ns.temp1Str10, value: detail!.lon!, color: 0xFFF5F5F5),
+          _RowInfo(label: i18ns.temp1Str11, value: detail!.lat!),
+          _RowInfo(label: i18ns.temp1Str12, value: detail!.profitMoney!, color: 0xFFF5F5F5),
+          _RowInfo(label: i18ns.temp1Str12, value: detail!.moneyType!),
+          _RowInfo(label: i18ns.temp1Str14, value: detail!.profitCoal!, color: 0xFFF5F5F5),
+          _RowInfo(label: i18ns.temp1Str15, value: detail!.profitCo2!),
+          _RowInfo(label: i18ns.temp1Str16, value: detail!.profitSo2!, color: 0xFFF5F5F5),
           
         ],
       ),

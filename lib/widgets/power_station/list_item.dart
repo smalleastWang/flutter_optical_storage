@@ -106,7 +106,7 @@ class _PowerStationItemWidgetState extends State<PowerStationItemWidget> {
         if (widget.data.id != null) {
           Application.navigateTo(
             context, Routes.powerStationDetail,
-            params: { 'id': widget.data.id, 'name': widget.data.name }
+            params: {'id': widget.data.id, 'name': widget.data.name, 'currentIndex': 1}
           );
         } else {
           Fluttertoast.showToast(msg: '电站ID不能为空');
@@ -125,13 +125,6 @@ class _PowerStationItemWidgetState extends State<PowerStationItemWidget> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.only(right: 10),
-            //   child: Image(
-            //     width: 100,
-            //     image: AssetImage("assets/images/${widget.data.status == 0 ?'batteryP' : 'pvbattery'}.jpg")
-            //   ),
-            // ),
             Container(
               width: 120,
               height: 100,
@@ -152,8 +145,7 @@ class _PowerStationItemWidgetState extends State<PowerStationItemWidget> {
                     fontSize: 15,
                     fontWeight: FontWeight.w500
                   )
-                )
-                ,
+                ),
               ),
             ),
             Expanded(

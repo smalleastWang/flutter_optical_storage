@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 HomeOverviewWidget(data),
-                HomeGridWidget(data),
+                HomeGridWidget(data, 'home'),
                 HomeChartWidget(data),
               ],
             )

@@ -11,6 +11,7 @@ import 'package:flutter_optical_storage/router/public.dart';
 import 'package:flutter_optical_storage/router/routes.dart';
 import 'package:flutter_optical_storage/service/custom_service.dart';
 import 'package:flutter_optical_storage/store/power_station.dart';
+import 'package:flutter_optical_storage/utils/const.dart';
 import 'package:flutter_optical_storage/utils/sp_util.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +40,11 @@ class MyApp extends StatelessWidget {
     Routes.configureRoutes(router);
     Application.router = router;
     return MaterialApp(
-      onGenerateTitle: (context) => AppLocalizations.of(context).appName,
+      onGenerateTitle: (context) {
+        AppLocalizations local = AppLocalizations.of(context);
+        Const.lang = local.languageCode;
+        return local.appName;
+      },
       localizationsDelegates: const [
         APPLocalizationDelegate(),
         GlobalWidgetsLocalizations.delegate,

@@ -51,7 +51,7 @@ dependencies:
   syncfusion_flutter_datepicker: ^20.2.49
   date_format: ^2.0.6
   data_table_2: ^2.3.7
-  flutter_echarts: ^2.3.0
+  syncfusion_flutter_charts: ^20.3.48
 
 dev_dependencies:
   flutter_test:

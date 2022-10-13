@@ -13,4 +13,6 @@ class Const {
 
   static const int pageSize = 10;
 
+  static String lang = ''; // 顶级组件加载是赋值
+
 }

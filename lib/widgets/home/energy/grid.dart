@@ -5,7 +5,8 @@ import 'package:flutter_optical_storage/models/api/home/energy_model.dart';
 
 class HomeGridWidget extends StatelessWidget {
   final HomeEnergyModel data;
-  const HomeGridWidget(this.data, {Key? key}) : super(key: key);
+  final String type;
+  const HomeGridWidget(this.data, this.type, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +24,13 @@ class HomeGridWidget extends StatelessWidget {
             _ItemWidget( imgName: 'discharge2', label: '累计放电量', color: 0xFF477DF0, value: data.totalDischarged.toString()),
           ],
         ),
+        type == 'home' ? 
         const _RowItemWidget(
           children: [
             _ItemWidget( imgName: 'charge1', label: '当日发电', color: 0xFF477DF0, value: '0.0'),
             _ItemWidget( imgName: 'charge2', label: '累计发电', color: 0xFF477DF0, value: '0.0'),
           ],
-        )
+        ) : Container()
       ],
     );
   }
