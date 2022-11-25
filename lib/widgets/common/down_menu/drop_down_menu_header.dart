@@ -31,7 +31,7 @@ class DropDownMenuHeader extends StatefulWidget {
     required this.titles,
     this.headHeight,
     this.defaultColor = const Color(0xFF333333),
-    this.clickColor = const Color(0xFFFF00FF),
+    this.clickColor = const Color(0xFF333333),
     this.drawableEndAssetImg,
     this.iconSize,
   }) : super(key: key);
@@ -89,49 +89,50 @@ class _DropDownMenuHeaderState extends State<DropDownMenuHeader> {
 
   Widget searchFilter(String name, int index) {
     return Expanded(
-        child: InkWell(
-      child: Container(
-        alignment: Alignment.center,
-        child: RichText(
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            text: TextSpan(
-                text: name,
-                style: TextStyle(
-                    color: currentIndex == index || widget.titles[index] != name
-                        ? widget.clickColor
-                        : widget.defaultColor),
-                children: [
-                  WidgetSpan(
-                      child: widget.drawableEndAssetImg == null
-                          ? Icon(
-                              currentIndex == index
-                                  ? Icons.arrow_drop_up
-                                  : Icons.arrow_drop_down,
-                              color: currentIndex == index ||
-                                      widget.titles[index] != name
-                                  ? widget.clickColor
-                                  : widget.defaultColor,
-                              size: widget.iconSize ?? 20,
-                            )
-                          : ImageIcon(
-                              widget.drawableEndAssetImg,
-                              color: currentIndex == index ||
-                                      widget.titles[index] != name
-                                  ? widget.clickColor
-                                  : widget.defaultColor,
-                              size: widget.iconSize ?? 20,
-                            ))
-                ])),
-      ),
-      onTap: () {
-        if (index == currentIndex && widget.menuController.isShow) {
-          widget.menuController.hide();
-        } else {
-          widget.menuController.show(index);
-          print("index $index");
-        }
-      },
-    ));
+      child: InkWell(
+        child: Container(
+          alignment: Alignment.center,
+          child: RichText(
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              text: TextSpan(
+                  text: name,
+                  style: TextStyle(
+                      color: currentIndex == index || widget.titles[index] != name
+                          ? widget.clickColor
+                          : widget.defaultColor),
+                  children: [
+                    WidgetSpan(
+                        child: widget.drawableEndAssetImg == null
+                            ? Icon(
+                                currentIndex == index
+                                    ? Icons.arrow_drop_up
+                                    : Icons.arrow_drop_down,
+                                color: currentIndex == index ||
+                                        widget.titles[index] != name
+                                    ? widget.clickColor
+                                    : widget.defaultColor,
+                                size: widget.iconSize ?? 20,
+                              )
+                            : ImageIcon(
+                                widget.drawableEndAssetImg,
+                                color: currentIndex == index ||
+                                        widget.titles[index] != name
+                                    ? widget.clickColor
+                                    : widget.defaultColor,
+                                size: widget.iconSize ?? 20,
+                              ))
+                  ])),
+        ),
+        onTap: () {
+          if (index == currentIndex && widget.menuController.isShow) {
+            widget.menuController.hide();
+          } else {
+            widget.menuController.show(index);
+            print("index $index");
+          }
+        },
+      )
+    );
   }
 }

@@ -6,11 +6,12 @@ import 'package:flutter_optical_storage/enums/common.dart';
 import 'package:flutter_optical_storage/i18n/app_localizations.dart';
 import 'package:flutter_optical_storage/models/api/alert/alert_item.dart';
 import 'package:flutter_optical_storage/models/api/power_station/power_station.dart';
-import 'package:flutter_optical_storage/utils/const.dart';
+import 'package:flutter_optical_storage/store/root.dart';
 import 'package:flutter_optical_storage/utils/date.dart';
 import 'package:flutter_optical_storage/utils/tool.dart';
 import 'package:flutter_optical_storage/widgets/common/down_menu/index.dart';
 import 'package:flutter_optical_storage/widgets/loading.dart';
+import 'package:provider/provider.dart';
 
 
 class AlertPage extends StatefulWidget {
@@ -26,6 +27,8 @@ class _AlertPageState extends State<AlertPage> {
   // final ScrollController _scrollController = ScrollController();
   List<DownMenuItemModel> powerStationOptions = [];
   List<AlertItemModel> alertList = [];
+  List<String> titles = ['所有类型', '所有设备', '未结束', '电站'];
+
   String sdate = formatToDayStr();
   String edate = formatToDayStr();
   String level = 'all';
@@ -42,28 +45,36 @@ class _AlertPageState extends State<AlertPage> {
   }
 
   initData() async {
+    warnTypeOptions[0].isSelect = true;
+    deviceOptions[0].isSelect = true;
+    statusOptions[2].isSelect = true;
     await getPowerStation();
     getData();
   }
   getPowerStation() async {
+    RootStore localeStore = Provider.of<RootStore>(context, listen: false);
     List<PowerStationModel> data = await PowerStationApi.fetchListApi({});
     List<DownMenuItemModel> powerStationList = [];
     for (var item in data) {
       powerStationList.add(DownMenuItemModel(code: item.id, name: item.name));
     }
     if (powerStationList.isNotEmpty) {
+      localeStore.setAlertTitle(powerStationList[0].name ?? '');
+      powerStationList[0].isSelect = true;
       setState(() {
         powerStationOptions = powerStationList;
+        titles[3] = powerStationList[0].name!;
         pid = data[0].id.toString();
       });
     }
   }
   getData() async {
+    RootStore rootStore = Provider.of<RootStore>(context, listen: false);
     setState(() {
       isloading = true;
     });
     List<AlertItemModel> resData = await AlertApi.fetchListApi({
-      "lang": languageMap[Const.lang] ?? 'zh_CN',
+      "lang": languageMap[rootStore.currLocale.languageCode] ?? 'zh_CN',
       "sdate": sdate,
       "edate": edate,
       "level": level,
@@ -101,7 +112,7 @@ class _AlertPageState extends State<AlertPage> {
     ];
   }
 
-   String getWarnTypeName(type) {
+  String getWarnTypeName(type) {
     DownMenuItemModel? typeOption = warnTypeOptions.firstWhere((v) {
       return v.code == type;
     }, orElse: () {
@@ -112,6 +123,8 @@ class _AlertPageState extends State<AlertPage> {
 
   @override
   Widget build(BuildContext context) {
+    RootStore localeStore = Provider.of<RootStore>(context, listen: false);
+    // AppLocalizations i18ns = AppLocalizations.of(context);
     return Column(
       children: [
         Container(
@@ -133,12 +146,12 @@ class _AlertPageState extends State<AlertPage> {
             ),
           ),
         ),
-        DropDownMenuHeader(
+        powerStationOptions.isNotEmpty ? DropDownMenuHeader(
           headHeight: 30,
           menuController: _menuController,
-          clickColor: Theme.of(context).primaryColor,
-          titles: const ['警告类型', '设备', '状态', '电站'],
-        ),
+          // clickColor: Theme.of(context).primaryColor,
+          titles: titles,
+        ) : const SizedBox.shrink(),
         Expanded(
           child: Stack(
             children: [
@@ -172,9 +185,7 @@ class _AlertPageState extends State<AlertPage> {
                   );
                 })
               ),
-              
               DropDownMenu(
-                height: 250,
                 milliseconds: 300,
                 menuController: _menuController,
                 children: [
@@ -217,6 +228,7 @@ class _AlertPageState extends State<AlertPage> {
                     menuController: _menuController,
                     filterList: powerStationOptions,
                     onTap: (index) {
+                      localeStore.setAlertTitle(powerStationOptions[index].name ?? '');
                       setState(() {
                         pid = powerStationOptions[index].code.toString();
                       });
@@ -228,7 +240,6 @@ class _AlertPageState extends State<AlertPage> {
             ],
           )
         ),
-        
       ]
     );
   }

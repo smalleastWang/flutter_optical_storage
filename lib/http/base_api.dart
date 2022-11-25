@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:flutter_optical_storage/router/routes.dart';
 import 'package:flutter_optical_storage/utils/sp_util.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'service.dart';
 import 'package:dio/dio.dart';
@@ -102,18 +100,6 @@ class BaseApi {
       throw Exception(service.errorFactory(error));
     }
     if (response != null && response.data != null) {
-      // String dataStr = json.encode(response.data);
-      // Map<String, dynamic> dataMap = json.decode(response.data);
-      // dataMap = service.responseFactory(dataMap);
-      // if (successCallBack != null) {
-      //   successCallBack(dataMap);
-      // }
-      // dynamic dataMap = json.decode(response.data);
-      // if (dataMap is List) {
-      //   dataMap = <String, dynamic>{
-      //     'dat': dataMap
-      //   };
-      // }
       
       if (response.data == '') {
         if (T is List) {
@@ -122,7 +108,12 @@ class BaseApi {
         if (T is Map) {
           return json.decode(response.data ?? '{}');
         }
-        throw Exception('接口返回为空');
+        Fluttertoast.showToast(msg: 'system error');
+        throw Exception('接口返回为空字符串');
+      }
+      if (response.data == null) {
+        Fluttertoast.showToast(msg: 'system error');
+        throw Exception('接口返回为null');
       }
       T data = json.decode(response.data);
       // dataMap = service.responseFactory(dataMap);
@@ -131,6 +122,7 @@ class BaseApi {
       }
       return data;
     }
+    Fluttertoast.showToast(msg: 'system error');
     throw Exception('接口返回为空');
   }
 }

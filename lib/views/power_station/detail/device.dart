@@ -42,6 +42,7 @@ class _PowerDeviceState extends State<PowerDevice> {
   final MenuController _menuController = MenuController();
   DownMenuItemModel deviceSelectItem = deviceOptions[0];
 
+  int? deviceType;
   late Future<PowerDeviceModel> deviceInfo;
 
   @override
@@ -67,6 +68,7 @@ class _PowerDeviceState extends State<PowerDevice> {
                   if (!snapshot.hasData) return const LoadingWidget();
                   PowerDeviceModel data = snapshot.data!;
                   List<DeviceList> deviceList = data.deviceList!;
+                  if (deviceType != null) deviceList = deviceList.where((item) => deviceType == 0 || item.deviceType == deviceType).toList();
                   return ListView.builder(
                     itemCount: deviceList.length,
                     // itemExtent: 50.0, //强制高度为50.0
@@ -82,11 +84,13 @@ class _PowerDeviceState extends State<PowerDevice> {
                 menuController: _menuController,
                 children: [
                   MenuList(
-                    index: 1,
+                    index: 0,
                     menuController: _menuController,
                     filterList: deviceOptions,
-                    onTap: (index) {
-                      setState(() {});
+                    onTap: (val) {
+                      setState(() {
+                        deviceType = val;
+                      });
                     },
                   ),
                 ]

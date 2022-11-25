@@ -5,6 +5,9 @@ import 'package:flutter_optical_storage/http/service.dart';
 const String customServiceKey = "CustomService";
 
 class CustomService extends Service {
+  String? domain;
+
+  CustomService({this.domain});
   @override
   String serviceKey() {
     return customServiceKey;
@@ -23,7 +26,7 @@ class CustomService extends Service {
     dio.options.headers = {
       "Access-Control-Allow-Origin": "*",
     };
-    dio.options.baseUrl = "https://solarweb.com.cn"; //此处只是默认的baseUrl  可通过路由改变baseUrl
+    dio.options.baseUrl = domain ?? "https://solarweb.com.cn"; //此处只是默认的baseUrl  可通过路由改变baseUrl
 
     dio.options.connectTimeout = 10000;
     dio.options.receiveTimeout = 8000;

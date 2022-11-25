@@ -73,7 +73,7 @@ class _PowerStationInfoState extends State<PowerStationInfo> {
                         Container(
                           height: 32,
                           alignment: Alignment.bottomLeft,
-                          child: Text('${nowWeather!.weather!}(${i18ns.temp1Str2})'),
+                          child: Text('${nowWeather!.weather!}${i18ns.temp1Str2}'),
                         ),
                       ],
                     ),

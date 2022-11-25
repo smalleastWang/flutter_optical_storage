@@ -35,6 +35,7 @@ class AppLocalizations {
   String get home8 => I18n.localizations[locale.languageCode]!["home8"]!;
   String get storageBoard => I18n.localizations[locale.languageCode]!["storage_board"]!;
   String get chargedDay => I18n.localizations[locale.languageCode]!["charged_day"]!;
+  String get chargedTotal => I18n.localizations[locale.languageCode]!["charged_total"]!;
   String get dischargedDay => I18n.localizations[locale.languageCode]!["discharged_day"]!;
   String get dischargedTotal => I18n.localizations[locale.languageCode]!["discharged_total"]!;
   String get batteryCapaciry => I18n.localizations[locale.languageCode]!["battery_capaciry"]!;
@@ -230,6 +231,7 @@ class AppLocalizations {
   String get name => I18n.localizations[locale.languageCode]!["name"]!;
   String get timeInterval => I18n.localizations[locale.languageCode]!["time_interval"]!;
   String get action => I18n.localizations[locale.languageCode]!["action"]!;
+  String get actionType => I18n.localizations[locale.languageCode]!["action_type"]!;
   String get executeOnce => I18n.localizations[locale.languageCode]!["executeOnce"]!;
   String get periodic => I18n.localizations[locale.languageCode]!["periodic"]!;
   String get period => I18n.localizations[locale.languageCode]!["period"]!;
@@ -255,5 +257,8 @@ class AppLocalizations {
   String get loggerType3 => I18n.localizations[locale.languageCode]!["LoggerType3"]!;
   String get loggerType4 => I18n.localizations[locale.languageCode]!["LoggerType4"]!;
   String get loggerType5 => I18n.localizations[locale.languageCode]!["LoggerType5"]!;
+  String get cancel => I18n.localizations[locale.languageCode]!["cancel"]!;
+  String get ok => I18n.localizations[locale.languageCode]!["ok"]!;
+  String get pickTime => I18n.localizations[locale.languageCode]!["pickTime"]!;
   
 }

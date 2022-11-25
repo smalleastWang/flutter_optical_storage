@@ -14,11 +14,17 @@ class MenuController extends ChangeNotifier {
   // 选择组件的title
   int titleIndex = 0;
 
+  double dropDownheight = 200;
+
   /// 更改Title
   changeTitle(int titleIndex, String? title) {
     this.titleIndex = titleIndex;
     this.title = title ?? "";
     hide();
+  }
+  /// 更改DropDownheight
+  changeDropDownheight(double height) {
+    dropDownheight = height;
   }
 
   // 显示 下拉

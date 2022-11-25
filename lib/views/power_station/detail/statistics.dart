@@ -4,8 +4,8 @@ import 'package:flutter_optical_storage/api/power_station.dart';
 import 'package:flutter_optical_storage/models/api/home/energy_model.dart';
 import 'package:flutter_optical_storage/utils/date.dart';
 import 'package:flutter_optical_storage/widgets/common/date_picker/horizontal_month_picker.dart';
-import 'package:flutter_optical_storage/widgets/home/energy/grid.dart';
-import 'package:flutter_optical_storage/widgets/home/energy/overview.dart';
+import 'package:flutter_optical_storage/widgets/home/grid.dart';
+import 'package:flutter_optical_storage/widgets/home/overview.dart';
 import 'package:flutter_optical_storage/widgets/loading.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -81,7 +81,8 @@ class _PowerStatisticsPageState extends State<PowerStatisticsPage> {
                         scrollDirection: Axis.horizontal,
                         children: [
                           SizedBox(
-                            width: 36.0 * chartData.length,
+                            // width: 36.0 * chartData.length,
+                            width: MediaQuery.of(context).size.width,
                             child: SfCartesianChart(
                               title: ChartTitle(text: '月充放电量统计'),
                               //图示
@@ -98,12 +99,23 @@ class _PowerStatisticsPageState extends State<PowerStatisticsPage> {
                                 alignment: ChartAlignment.center
                               ),
                               primaryXAxis: CategoryAxis(),
+                              selectionGesture: ActivationMode.singleTap,
+                              //跟踪球
+                              trackballBehavior: TrackballBehavior(
+                                lineType: TrackballLineType.vertical, //纵向选择指示器
+                                activationMode: ActivationMode.singleTap,
+                                enable: true,
+                                tooltipAlignment: ChartAlignment.near, //工具提示位置(顶部)
+                                shouldAlwaysShow: true, //跟踪球始终显示(纵向选择指示器)
+                                tooltipDisplayMode:
+                                    TrackballDisplayMode.groupAllPoints, //工具提示模式(全部分组)
+                              ),
                               // 自定义y轴数值
                               // primaryYAxis: NumericAxis(minimum: -2, maximum: 10, interval: 2),
                               series: <ChartSeries<ChartModel, String>>[
                                 ColumnSeries<ChartModel, String>(
-                                  name: '实时功率',
-                                  color: Colors.green,
+                                  name: '充电量',
+                                  color: const Color(0xFF2FC7C8),
                                   dataSource: chartData,
                                   xValueMapper: (ChartModel data, _) => data.key,
                                   yValueMapper: (ChartModel data, _) => data.charged,
@@ -115,8 +127,8 @@ class _PowerStatisticsPageState extends State<PowerStatisticsPage> {
                                   ),
                                 ),
                                 ColumnSeries<ChartModel, String>(
-                                  name: '实时功率',
-                                  color: Colors.red,
+                                  name: '放电量',
+                                  color: const Color(0xFF3499FF),
                                   dataSource: chartData,
                                   xValueMapper: (ChartModel data, _) => data.key,
                                   yValueMapper: (ChartModel data, _) => data.discharged,

@@ -1,4 +1,10 @@
 PODS:
+  - AMap3DMap (9.5.0):
+    - AMapFoundation (>= 1.8.0)
+  - amap_flutter_map (0.0.1):
+    - AMap3DMap
+    - Flutter
+  - AMapFoundation (1.8.0)
   - connectivity (0.0.1):
     - Flutter
     - Reachability
@@ -6,36 +12,50 @@ PODS:
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
+  - package_info (0.0.1):
+    - Flutter
   - Reachability (3.2)
   - shared_preferences_ios (0.0.1):
     - Flutter
   - Toast (4.0.0)
 
 DEPENDENCIES:
+  - amap_flutter_map (from `.symlinks/plugins/amap_flutter_map/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - package_info (from `.symlinks/plugins/package_info/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
 
 SPEC REPOS:
   trunk:
+    - AMap3DMap
+    - AMapFoundation
     - Reachability
     - Toast
 
 EXTERNAL SOURCES:
+  amap_flutter_map:
+    :path: ".symlinks/plugins/amap_flutter_map/ios"
   connectivity:
     :path: ".symlinks/plugins/connectivity/ios"
   Flutter:
     :path: Flutter
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
+  package_info:
+    :path: ".symlinks/plugins/package_info/ios"
   shared_preferences_ios:
     :path: ".symlinks/plugins/shared_preferences_ios/ios"
 
 SPEC CHECKSUMS:
+  AMap3DMap: dc972a62d7fe451795e4b3637e377a2cf593d0e7
+  amap_flutter_map: 979e54d227cedac6c7504a2151bfbf3bcf96760a
+  AMapFoundation: f48153f724114b58da9b01875ab88a1f6856e3db
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   fluttertoast: 16fbe6039d06a763f3533670197d01fc73459037
+  package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196

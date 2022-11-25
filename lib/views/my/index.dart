@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_optical_storage/i18n/app_localizations.dart';
 import 'package:flutter_optical_storage/router/routes.dart';
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyPage extends StatefulWidget {
@@ -12,18 +13,19 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
 
-  String account = '';
+  String version = '';
 
   @override
   void initState() {
-    getUserInfo();
+    init();
     super.initState();
   }
 
-  getUserInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  init() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      account = prefs.getString('account') ?? '';
+      version = packageInfo.version;
     });
   }
 
@@ -32,7 +34,7 @@ class _MyPageState extends State<MyPage> {
     AppLocalizations i18ns = AppLocalizations.of(context);
     return Column(
       children: [
-        _MyHeaderWidget(account: account),
+        _MyHeaderWidget(version: version),
         _MyItemWidget(icon: Icons.info_outline, title: i18ns.setting1, onTap: () => Navigator.pushNamed(context, Routes.about)),
         _MyItemWidget(icon: Icons.lock_outline, title: i18ns.setting2, onTap: () => Navigator.pushNamed(context, Routes.changePassword)),
         _MyItemWidget(icon: Icons.logout, title: i18ns.setting3, onTap: () async {
@@ -47,8 +49,8 @@ class _MyPageState extends State<MyPage> {
 }
 
 class _MyHeaderWidget extends StatelessWidget {
-  final String account;
-  const _MyHeaderWidget({Key? key, required this.account}) : super(key: key);
+  final String version;
+  const _MyHeaderWidget({Key? key, required this.version}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +69,8 @@ class _MyHeaderWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('微信用户'),
-              const Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Text('@')),
-              Text(account),
+              const Text('SolarEMS'),
+              Text(version),
             ],
           )
         ],

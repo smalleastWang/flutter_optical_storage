@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'menu_controller.dart';
+import 'widgets/menu_list.dart';
 
 /// 下拉选择  所有的头维护一个下拉组件 组件内部child更新
 class DropDownMenu extends StatefulWidget {
   /// 下拉组件数组
-  final List<Widget> children;
+  final List<MenuList> children;
 
   /// 下拉组件高度
   final double height;
@@ -44,7 +45,24 @@ class _DropDownMenuState extends State<DropDownMenu>
         duration: Duration(milliseconds: widget.milliseconds)); //2s
     cure = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
     // 高度变化
-    animation = Tween(begin: 0.0, end: widget.height).animate(cure)
+    setAnimation(widget.height);
+    widget.menuController.addListener(() {
+      double itemlength = widget.children[widget.menuController.index].filterList.length.toDouble();
+      setAnimation(itemlength * 40 + 6);
+      if (widget.menuController.isShow) {
+        // 显示
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+      // 刷新筛选数据
+      setState(() {});
+    });
+  }
+
+  setAnimation(double height) {
+    setState(() {
+      animation = Tween(begin: 0.0, end: height).animate(cure)
       // 动画执行监听
       ..addStatusListener((status) {
         if (status == AnimationStatus.dismissed) {
@@ -61,16 +79,6 @@ class _DropDownMenuState extends State<DropDownMenu>
           });
         }
       });
-
-    widget.menuController.addListener(() {
-      if (widget.menuController.isShow) {
-        // 显示
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-      // 刷新筛选数据
-      setState(() {});
     });
   }
 

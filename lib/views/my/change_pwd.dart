@@ -25,6 +25,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
   handlesSubmit() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    AppLocalizations i18ns = AppLocalizations.of(context);
     if (prefs.getString('userId') == null) return Fluttertoast.showToast(msg: 'userId不能为空');
     if (prefs.getString('account') == null) return Fluttertoast.showToast(msg: '用户名不能为空');
     //验证通过提交数据
@@ -34,7 +35,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       "oldpwd": sha1.convert(utf8.encode(_oldController.text)).toString(),
       "newpwd": sha1.convert(utf8.encode(_pwdController.text)).toString()
     };
-    await MyApi.fetchChangePwdApi(query);
+    await MyApi.fetchChangePwdApi(query, i18ns);
+    Fluttertoast.showToast(msg: i18ns.passwd11);
     // ignore: use_build_context_synchronously
     Navigator.pushReplacementNamed(context, Routes.my);
   }

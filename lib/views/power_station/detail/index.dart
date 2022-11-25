@@ -44,9 +44,9 @@ class _IndexPageState extends State<PowerStationDetailPage> {
     AppLocalizations i18ns = AppLocalizations.of(context);
     List<TabWidget> tabs = [
       TabWidget(Icons.home, i18ns.station1, i18ns.station1, PowerStationInfo(widget.id)),
-      TabWidget(Icons.battery_charging_full_outlined, i18ns.station2, i18ns.station2, PowerStatisticsPage(widget.id)),
+      TabWidget(Icons.battery_charging_full_outlined, i18ns.station2, widget.name, PowerStatisticsPage(widget.id)),
       TabWidget(Icons.crisis_alert, i18ns.station3, i18ns.station3, PowerDevice(widget.id)),
-      TabWidget(Icons.person, i18ns.videoTab, i18ns.videoTab, const MyPage()),
+      TabWidget(Icons.person, i18ns.videoTab, i18ns.videoTab, const Center(child: Text('手机APP视频功能开发中'))),
     ];
     return Scaffold(
       appBar: AppBar(

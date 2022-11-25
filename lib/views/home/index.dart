@@ -1,11 +1,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_optical_storage/api/home.dart';
+import 'package:flutter_optical_storage/api/power_station.dart';
 import 'package:flutter_optical_storage/models/api/home/energy_model.dart';
 import 'package:flutter_optical_storage/models/api/home/photovoltaic_model.dart';
-import 'package:flutter_optical_storage/widgets/home/energy/chart.dart';
-import 'package:flutter_optical_storage/widgets/home/energy/grid.dart';
-import 'package:flutter_optical_storage/widgets/home/energy/overview.dart';
+import 'package:flutter_optical_storage/models/api/power_station/power_station.dart';
+import 'package:flutter_optical_storage/widgets/home/chart.dart';
+import 'package:flutter_optical_storage/widgets/home/grid.dart';
+import 'package:flutter_optical_storage/widgets/home/market_map.dart';
+import 'package:flutter_optical_storage/widgets/home/overview.dart';
 import 'package:flutter_optical_storage/widgets/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class HomePage extends StatefulWidget {
@@ -16,50 +19,50 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  late Future<HomePhotovoltaicModel> photovoltaicData;
-  late Future<HomeEnergyModel> energyData;
-  int role = 2; // 光伏
+  List<PowerStationModel> powerListData = [];
+  Future<HomePhotovoltaicModel>? photovoltaicData;
+  Future<HomeEnergyModel>? energyData;
 
   @override
   void initState() {
     initData();
     super.initState();
   }
-  initData() {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
+  initData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? rolepower = prefs.getInt('rolepower') ?? 688;
+    List<PowerStationModel> powerListDataRes = await PowerStationApi.fetchListApi({});
     setState(() {
-      // int? rolepower = prefs.getInt('rolepower') ?? 688;
-      photovoltaicData = HomeApi.fetchPhotovoltaicApi();
-      energyData = HomeApi.fetchEnergyApi({});
-      // if (rolepower&(1<<9) == 0) { // 光伏
-      //   photovoltaicData = HomeApi.fetchPhotovoltaicApi();
-      // } else { // 储能
-      //   energyData = HomeApi.fetchEnergyApi();
-      // }
+      powerListData = powerListDataRes;
+      if (rolepower&(1<<9) == 0) { // 光伏
+        photovoltaicData = HomeApi.fetchPhotovoltaicApi();
+      } else { // 储能
+        energyData = HomeApi.fetchEnergyApi({});
+      }
     });
   }
   @override
   Widget build(BuildContext context) {
-    if (role == 1) { // 光伏
-      return SingleChildScrollView(
+    Widget widget = const SizedBox.shrink();
+    if (photovoltaicData != null) { // 光伏
+      widget = SingleChildScrollView(
         child: FutureBuilder<HomePhotovoltaicModel>(
           future: photovoltaicData,
           builder: (context, snapshot) {
-            if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
-            // HomePhotovoltaicModel? data = snapshot.data;
+            if (!snapshot.hasData) return const LoadingWidget();
+            HomePhotovoltaicModel data = snapshot.data!;
             return Column(
-              children: const [
-                // HomeOverviewWidget(photovoltaicData: data),
-                // HomeGridWidget(photovoltaicData: data),
-                // HomeChartWidget(photovoltaicData: data),
+              children: [
+                HomeOverviewPhotovoltaicWidget(data),
+                HomeGridPhotovoltaicWidget(data, 'home'),
+                AmapMarketWidget(powerListData)
               ],
             );
           },
         ),
       );
-    } else { // 储能
-      return FutureBuilder<HomeEnergyModel>(
+    } else if (energyData != null) { // 储能
+      widget = FutureBuilder<HomeEnergyModel>(
         future: energyData,
         builder: (context, snapshot) {
           if (!snapshot.hasData) return const LoadingWidget();
@@ -76,5 +79,6 @@ class _HomePageState extends State<HomePage> {
         }
       );
     }
+    return widget;
   }
 }

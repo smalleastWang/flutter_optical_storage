@@ -66,7 +66,7 @@ class PowerStationApi {
     return list;
   }
   /// 
-  /// 设备远程控制
+  /// 设备远程控制列表
   static Future<List<PowerDeviceRemoteCtrlModel>> fetchDeviceRemoteCtrlApi(Map<String, dynamic> params) async {
     //验证通过提交数据
     Map<String, dynamic> query = {'action': 'querydeviceCtrlView'};
@@ -77,6 +77,16 @@ class PowerStationApi {
       list.add(PowerDeviceRemoteCtrlModel.fromJson(item));
     }
     return list;
+  }
+  /// 
+  /// 执行远程控制
+  static Future<Map<String, dynamic>> fetchDeviceRemoteCtrlHandleApi(Map<String, dynamic> params) async {
+    //验证通过提交数据
+    Map<String, dynamic> query = {'action': 'deviceControl'};
+    query.addAll(params);
+    Map<String, dynamic> data = await CommonApi().request(query: query);
+    return data;
+    
   }
   /// 
   /// 调度时刻表
@@ -115,5 +125,13 @@ class PowerStationApi {
       list.add({'key': item['key'], 'charged': item['charged'], 'discharged': item['discharged']});
     }
     return list;
+  }
+  /// 
+  /// 刷新设备实时数据
+  static Future<Map<String, dynamic>> fetchRefreshDeviceDataApi(Map<String, dynamic> params) async {
+    Map<String, dynamic> query = {'action': 'refreshDeviceRealtimeData'};
+    query.addAll(params);
+    Map<String, dynamic> data = await ConfigApi().request(query: query);
+    return data;
   }
 }

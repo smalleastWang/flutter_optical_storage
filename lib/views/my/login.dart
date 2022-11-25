@@ -1,15 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
-import 'package:flutter_optical_storage/api/common_api.dart';
 import 'package:flutter_optical_storage/api/my.dart';
+import 'package:flutter_optical_storage/http/service_manager.dart';
 import 'package:flutter_optical_storage/i18n/app_localizations.dart';
+import 'package:flutter_optical_storage/i18n/i18n.dart';
 import 'package:flutter_optical_storage/models/api/login_model.dart';
 import 'package:flutter_optical_storage/models/api/user_info.dart';
 import 'package:flutter_optical_storage/router/public.dart';
 import 'package:flutter_optical_storage/router/routes.dart';
+import 'package:flutter_optical_storage/service/custom_service.dart';
+import 'package:flutter_optical_storage/store/root.dart';
 import 'package:flutter_optical_storage/widgets/loading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+
+Map<String, String> langs= {
+  'zh': '中文',
+  'en': 'English',
+  // 'rus': 'Russian'
+};
+List<String> domains = [
+  'https://solaremsglobal.com',
+  'https://solarweb.com.cn',
+  'https://szborui.group'
+];
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -23,7 +39,21 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _pwdController = TextEditingController();
   final GlobalKey _formKey = GlobalKey<FormState>();
 
-  bool isShow = false; // 0 获取状态中 1 未登录 2 已登录
+  bool isShow = false;
+  bool pwdVisible = false;
+  String _lang = 'zh';
+  String _domain = domains[0];
+
+  void _handleRadioChanged(String? value) {
+    setState(() {
+      _lang = value!;
+    });
+  }
+  void _handleDomainChanged(String? domain) {
+    setState(() {
+      _domain = domain!;
+    });
+  }
 
   @override
   void initState() {
@@ -32,8 +62,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   init() async {
+    RootStore localeStore = Provider.of<RootStore>(context, listen: false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userId = prefs.getString('userId');
+    String? localLang = prefs.getString('lang');
+    // 判断本地存储语言并修改语言
+    if (localLang != null) {
+      localeStore.setLocale(localLang);
+    }
+    // 用户
     if (userId == null || userId == '') {
       setState(() {
         isShow = true;
@@ -45,14 +82,28 @@ class _LoginPageState extends State<LoginPage> {
   }
   
   handlesSubmit() async {
-    LoginDatModel dat = await MyApi.fetchLoginApi({ "account": _unameController.text, "passwd": sha1.convert(utf8.encode(_pwdController.text)).toString()});
+    // 设置域名
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('domain', _domain);
+    ServiceManager().registeredService(CustomService(domain: _domain));
+    // ignore: use_build_context_synchronously
+    RootStore localeStore = Provider.of<RootStore>(context, listen: false);
+    // ignore: use_build_context_synchronously
+    AppLocalizations i18ns = AppLocalizations.of(context);
+    LoginDatModel dat = await MyApi.fetchLoginApi({ "account": _unameController.text, "passwd": sha1.convert(utf8.encode(_pwdController.text)).toString()}, i18ns);
     if (dat.userid != null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('account', _unameController.text);
       await prefs.setString('userId', dat.userid ?? '');
       UserInfoModel userInfo = await MyApi.fetchUserInfoApi();
+      if (userInfo.sysrole?.rolepower != null) {
+        prefs.setInt('rolepower', userInfo.sysrole?.rolepower as int);
+      }
       prefs.setString('userInfo', json.encode(userInfo));
       Fluttertoast.showToast(msg: '登录成功');
+      // 存储和设置语言
+      prefs.setString('lang', _lang);
+      localeStore.setLocale(_lang);
       // ignore: use_build_context_synchronously
       Navigator.pushReplacementNamed(context, Routes.home);
     } else {
@@ -62,17 +113,25 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    Locale myLocale = Localizations.localeOf(context);
+    if (_lang == '') {
+      setState(() {
+        _lang = myLocale.languageCode;
+      });
+    }
     AppLocalizations i18ns = AppLocalizations.of(context);
     if (!isShow) return const LoadingWidget();
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).login),
+        automaticallyImplyLeading: false,
+        // title: Text(AppLocalizations.of(context).login),
       ),
       body: Container(
         padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
@@ -105,14 +164,76 @@ class _LoginPageState extends State<LoginPage> {
                   border: const OutlineInputBorder(),
                   // labelText: "密码",
                   hintText: i18ns.loginNote2,
-                  prefixIcon: const Icon(Icons.lock)
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                  icon: Icon(pwdVisible ? Icons.visibility : Icons.visibility_off),
+                  onPressed: () { 
+                    setState(() {
+                      pwdVisible = !pwdVisible;
+                    });
+                   },
                 ),
-                obscureText: true,
+                ),
+                obscureText: !pwdVisible,
                 //校验密码
                 validator: (v) {
                   return v!.trim().length > 5 ? null : "密码不能少于6位";
                 },
               ),
+              // Row(
+              //   children: [
+              //     const Text('语言'),
+              //     const SizedBox(width: 10),
+              //     DropdownButton(
+              //       hint: const Text('请选择语言'),
+              //       items: I18n.languages().map((lang) => DropdownMenuItem(
+              //         value: lang,
+              //         child: Text(langs[lang] ?? ''),
+              //       )).toList(),
+              //       value: _lang,
+              //       onChanged: _handleRadioChanged,
+              //     ),
+              //   ],
+              // ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  children: [
+                    const Text('语言'),
+                    const SizedBox(width: 15),
+                    DropdownButton(
+                      value: _lang,
+                      items: I18n.languages().map((lang) => DropdownMenuItem(value: lang, child: Text(langs[lang] ?? ''))).toList(),
+                      onChanged: _handleRadioChanged,
+                    )
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  const Text('服务器'),
+                  const SizedBox(width: 15),
+                  DropdownButton(
+                    value: _domain,
+                    items: domains.map((domain) => DropdownMenuItem(value: domain, child: Text(domain))).toList(),
+                    onChanged: _handleDomainChanged,
+                  )
+                ],
+              ),
+              
+              // Row(
+              //   children: I18n.languages().map((lang) => Row(
+              //     children: [
+              //       Radio(
+              //         value: lang,
+              //         groupValue: _lang,
+              //         onChanged: _handleRadioChanged,
+              //       ),
+              //       Text(langs[lang] ?? ''),
+              //       const SizedBox(width: 10),
+              //     ],
+              //   )).toList(),
+              // ),
               // 登录按钮
               Padding(
                 padding: const EdgeInsets.only(top: 28.0),

@@ -1,8 +1,22 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_optical_storage/api/power_station.dart';
+import 'package:flutter_optical_storage/i18n/app_localizations.dart';
 import 'package:flutter_optical_storage/models/api/power_station/device_logger_schedule.dart';
 import 'package:flutter_optical_storage/widgets/loading.dart';
+
+Map<int, String> actTypeEnum = {
+  1: '单次执行',
+  2: '周期执行'
+};
+Map<int, String>  actionEnum = {
+  1: '充电',
+  2: '休息',
+  3: '储能系统提供',
+  4: '太阳能与市电充电',
+  5: '太阳能充电',
+  6: '光伏发电'
+};
 
 class DeviceLoggerScheduleWidget extends StatefulWidget {
   final String loggerNum;
@@ -23,6 +37,7 @@ class _DeviceLoggerScheduleWidgetState extends State<DeviceLoggerScheduleWidget>
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations i18ns = AppLocalizations.of(context);
     return FutureBuilder<List<PowerDeviceLoggerScheduleModel>>(
       future: remoteCtrlData,
       builder: (context, snapshot) {
@@ -37,15 +52,15 @@ class _DeviceLoggerScheduleWidgetState extends State<DeviceLoggerScheduleWidget>
           headingRowColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
             return Colors.green.withOpacity(.15);
           }),
-          columns: const [
-            DataColumn2(label: Center(child: Text('序号')), size: ColumnSize.S),
-            DataColumn2(label: Center(child: Text('名称')), fixedWidth: 150),
-            DataColumn2(label: Center(child: Text('时间段')), fixedWidth: 150),
-            DataColumn2(label: Center(child: Text('动作')), size: ColumnSize.S),
-            DataColumn2(label: Center(child: Text('调度功率(kW)'))),
-            DataColumn2(label: Center(child: Text('动作类型')), size: ColumnSize.S),
-            DataColumn2(label: Center(child: Text('周期(秒)')), size: ColumnSize.S),
-            DataColumn2(label: Center(child: Text('电价')), size: ColumnSize.S),
+          columns: [
+            DataColumn2(label: Center(child: Text(i18ns.number)), size: ColumnSize.S),
+            DataColumn2(label: Center(child: Text(i18ns.name)), fixedWidth: 150),
+            DataColumn2(label: Center(child: Text(i18ns.timeInterval)), fixedWidth: 150),
+            DataColumn2(label: Center(child: Text(i18ns.action)), size: ColumnSize.S),
+            DataColumn2(label: Center(child: Text(i18ns.powerSche))),
+            DataColumn2(label: Center(child: Text(i18ns.actionType)), size: ColumnSize.S),
+            DataColumn2(label: Center(child: Text(i18ns.period)), size: ColumnSize.S),
+            DataColumn2(label: Center(child: Text(i18ns.energyPrice)), size: ColumnSize.S),
           ],
           rows: List<DataRow>.generate(data.length, (index) {
             return DataRow(
@@ -57,9 +72,9 @@ class _DeviceLoggerScheduleWidgetState extends State<DeviceLoggerScheduleWidget>
                 DataCell(Center(child: Text('${data[index].id}'))),
                 DataCell(Center(child: Text('${data[index].name}'))),
                 DataCell(Center(child: Text('${data[index].startTime}-${data[index].endTime}'))),
-                DataCell(Center(child: Text('${data[index].cmdNo}'))),
+                DataCell(Center(child: Text('${actionEnum[data[index].cmdNo]}'))),
                 DataCell(Center(child: Text('${data[index].schePower}'))),
-                DataCell(Center(child: Text('${data[index].actType}'))),
+                DataCell(Center(child: Text('${actTypeEnum[data[index].actType]}'))),
                 DataCell(Center(child: Text('${data[index].period}'))),
                 DataCell(Center(child: Text('${data[index].price}'))),
               ]

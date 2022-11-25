@@ -106,7 +106,7 @@ class _PowerStationItemWidgetState extends State<PowerStationItemWidget> {
         if (widget.data.id != null) {
           Application.navigateTo(
             context, Routes.powerStationDetail,
-            params: {'id': widget.data.id, 'name': widget.data.name, 'currentIndex': 1}
+            params: {'id': widget.data.id, 'name': widget.data.name, 'currentIndex': 2}
           );
         } else {
           Fluttertoast.showToast(msg: '电站ID不能为空');

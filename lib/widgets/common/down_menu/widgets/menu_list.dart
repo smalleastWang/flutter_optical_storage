@@ -48,111 +48,105 @@ class MenuList extends StatefulWidget {
 }
 
 class _MenuListState extends State<MenuList> {
+
+  _handleSelect(int index) {
+    return () {
+      widget.menuController.changeTitle(widget.index, widget.filterList[index].name);
+      setState(() {
+        for (int i = 0; i < widget.filterList.length; i++) {
+          if (i == index) {
+            widget.filterList[i].isSelect = true;
+          } else {
+            widget.filterList[i].isSelect = false;
+          }
+        }
+      });
+      if (widget.onTap != null) widget.onTap!(index);
+    };
+    
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: widget.margin ??
-            const EdgeInsetsDirectional.only(start: 15, end: 15),
-        padding: widget.padding ?? const EdgeInsetsDirectional.only(bottom: 5),
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              width: 0.6,//宽度
+              color: Colors.grey.withOpacity(.4), //边框颜色
+            )
+          )
+        ),
+        margin: widget.margin ?? const EdgeInsetsDirectional.only(top: 2),
+        padding: widget.padding ?? const EdgeInsetsDirectional.only(bottom: 5, start: 15, end: 15),
         child: Stack(
           children: [
-            Container(
-              margin: widget.choose == Choose.multi
-                  ? const EdgeInsetsDirectional.only(bottom: 44)
-                  : null,
-              child: GridView.builder(
-                // physics: const BouncingScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  //设置列数
-                  crossAxisCount: 1,
-                  //设置横向间距
-                  crossAxisSpacing: 10,
-                  //设置主轴间距
-                  mainAxisSpacing: 10,
-                  // 宽高比
-                  childAspectRatio: 9,
-                ),
-                itemBuilder: (context, index) {
-                  return widget.choose == Choose.single
-                      ? InkWell(
-                          child: widget.itemWidget ??
-                              Container(
-                                  decoration: BoxDecoration(
-                                      color: widget.filterList[index].isSelect == true
-                                          ? const Color(0x0DAB4BF4)
-                                          : Colors.white,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(4)),
-                                      border: Border.all(
-                                          color:
-                                              widget.filterList[index].isSelect == true
-                                                  ? Theme.of(context).primaryColor
-                                                  : const Color(0xffacacac))),
-                                  alignment: Alignment.center,
-                                  child: Text(widget.filterList[index].name ?? "",
-                                      style: TextStyle(
-                                          color:
-                                              widget.filterList[index].isSelect == true
-                                                  ? Theme.of(context).primaryColor
-                                                  : const Color(0xffacacac)))),
-                          onTap: () {
-                            widget.menuController.changeTitle(
-                                widget.index, widget.filterList[index].name);
-                            setState(() {
-                              for (int i = 0;
-                                  i < widget.filterList.length;
-                                  i++) {
-                                if (i == index) {
-                                  widget.filterList[i].isSelect = true;
-                                } else {
-                                  widget.filterList[i].isSelect = false;
-                                }
-                              }
-                            });
-                            if (widget.onTap != null) widget.onTap!(index);
-                          })
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: InkWell(
-                                  child: Text(
-                                      widget.filterList[index].name ?? "",
-                                      style: TextStyle(
-                                          color: widget.filterList[index]
-                                                      .isSelect ==
-                                                  true
-                                              ? Theme.of(context).primaryColor
-                                              : const Color(0xffacacac))),
-                                  onTap: () {
-                                    setState(() {
-                                      widget.filterList[index].isSelect =
-                                          !(widget.filterList[index].isSelect);
-                                    });
-                                  },
-                                )),
-                                SizedBox(
-                                  height: 20,
-                                  child: Checkbox(
-                                    value: widget.filterList[index].isSelect,
-                                    onChanged: (v) {
-                                      setState(() {
-                                        widget.filterList[index].isSelect =
-                                            !(widget
-                                                .filterList[index].isSelect);
-                                      });
-                                    },
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        );
-                },
-                itemCount: widget.filterList.length,
+            GridView.builder(
+              // physics: const BouncingScrollPhysics(),
+              itemCount: widget.filterList.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                //设置列数
+                crossAxisCount: 1,
+                //设置横向间距
+                crossAxisSpacing: 10,
+                //设置主轴间距
+                // mainAxisSpacing: 5,
+                // 宽高比
+                childAspectRatio: 9,
               ),
+              itemBuilder: (context, index) {
+                bool isSelect = widget.filterList[index].isSelect;
+                if (widget.choose == Choose.single) {
+                  return InkWell(
+                    onTap: _handleSelect(index),
+                    child: widget.itemWidget ?? Container(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            widget.filterList[index].name ?? "",
+                            style: TextStyle(color: isSelect == true ? Theme.of(context).primaryColor : const Color(0xff666666)),
+                          ),
+                          isSelect ? Icon(Icons.check, color: Theme.of(context).primaryColor) : const SizedBox.shrink(),
+                        ],
+                      )
+                    ),
+                  );
+                }
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            child: Text(
+                                widget.filterList[index].name ?? "",
+                                style: TextStyle(color: widget.filterList[index].isSelect == true ? Theme.of(context).primaryColor : const Color(0xffacacac))
+                            ),
+                            onTap: () {
+                              setState(() {
+                                widget.filterList[index].isSelect = !(widget.filterList[index].isSelect);
+                              });
+                            },
+                          )
+                        ),
+                        SizedBox(
+                          height: 20,
+                          child: Checkbox(
+                            value: widget.filterList[index].isSelect,
+                            onChanged: (v) {
+                              setState(() {
+                                widget.filterList[index].isSelect = !(widget.filterList[index].isSelect);
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                );
+              },
             ),
             Visibility(
               visible: widget.choose == Choose.multi,
@@ -186,7 +180,6 @@ class _MenuListState extends State<MenuList> {
                           child: const Text("确定"),
                           onPressed: () {
                             String title = "";
-
                             for (var data in widget.filterList) {
                               if (data.isSelect == true) {
                                 title += "${data.name},";
