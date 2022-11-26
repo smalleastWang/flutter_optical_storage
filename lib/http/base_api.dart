@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_optical_storage/utils/sp_util.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'service.dart';
 import 'package:dio/dio.dart';
@@ -27,7 +28,8 @@ class BaseApi {
       Map<String, dynamic>? header,
       Function? successCallBack,
       Function? errorCallBack}) async {
-    String? userId = SpUtil.prefs?.getString('userId') ?? '82';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
     //获取到对应的服务
     Service service;
     if (ServiceManager().serviceMap.containsKey(serviceKey())) {
@@ -41,7 +43,7 @@ class BaseApi {
     Map<String, dynamic>? queryParams = {};
     var globalQueryParams = service.serviceQuery();
     // 添加 userId
-    if (userId != null) {
+    if (userId != null && userId.isNotEmpty) {
       queryParams.addAll({"userid": userId});
     }
     if (globalQueryParams != null) {

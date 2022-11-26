@@ -20,6 +20,7 @@ PODS:
   - Toast (4.0.0)
 
 DEPENDENCIES:
+  - AMap3DMap
   - amap_flutter_map (from `.symlinks/plugins/amap_flutter_map/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - Flutter (from `Flutter`)
@@ -60,6 +61,6 @@ SPEC CHECKSUMS:
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: 24e33c3168fac1d469dcca8aa660afb24f1cf1a0
 
 COCOAPODS: 1.11.3
