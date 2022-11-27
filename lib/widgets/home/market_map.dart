@@ -17,7 +17,7 @@ class AmapMarketWidget extends StatefulWidget {
 
 class _AmapMarketWidgetState extends State<AmapMarketWidget> {
 
-  final Map<String, Marker> _initMarkerMap = <String, Marker>{};
+  // final Map<String, Marker> _initMarkerMap = <String, Marker>{};
 
 
   late CameraPosition kInitialPosition;
@@ -38,14 +38,14 @@ class _AmapMarketWidgetState extends State<AmapMarketWidget> {
   }
   @override
   void initState() {
-    for (var item in widget.data) {
-      LatLng position = LatLng(
-        double.parse(item.lat!),
-        double.parse(item.lon!)
-      );
-      Marker marker = Marker(position: position, infoWindow: InfoWindow(title: item.name));
-      _initMarkerMap[marker.id] = marker;
-    }
+    // for (var item in widget.data) {
+    //   LatLng position = LatLng(
+    //     double.parse(item.lat!),
+    //     double.parse(item.lon!)
+    //   );
+    //   Marker marker = Marker(position: position, infoWindow: InfoWindow(title: item.name));
+    //   _initMarkerMap[marker.id] = marker;
+    // }
     kInitialPosition = CameraPosition(
       target:  LatLng(
         double.parse(widget.data[0].lat!),
@@ -62,14 +62,12 @@ class _AmapMarketWidgetState extends State<AmapMarketWidget> {
     final AMapWidget map = AMapWidget(
       initialCameraPosition: kInitialPosition,
       buildingsEnabled: false,
-      markers: Set<Marker>.of(_initMarkerMap.values),
+      // markers: Set<Marker>.of(_initMarkerMap.values),
       apiKey: Const.amapApiKeys,
       onMapCreated: onMapCreated,
-      privacyStatement: const AMapPrivacyStatement(hasShow: true, hasAgree: true, hasContains: true),
+      privacyStatement: Const.amapPrivacyStatement,
     );
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 300,
+    return Expanded(
       child: map,
     );
   }

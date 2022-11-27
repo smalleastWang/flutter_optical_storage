@@ -45,21 +45,19 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Widget widget = const SizedBox.shrink();
     if (photovoltaicData != null) { // 光伏
-      widget = SingleChildScrollView(
-        child: FutureBuilder<HomePhotovoltaicModel>(
-          future: photovoltaicData,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return const LoadingWidget();
-            HomePhotovoltaicModel data = snapshot.data!;
-            return Column(
-              children: [
-                HomeOverviewPhotovoltaicWidget(data),
-                HomeGridPhotovoltaicWidget(data, 'home'),
-                AmapMarketWidget(powerListData)
-              ],
-            );
-          },
-        ),
+      widget = FutureBuilder<HomePhotovoltaicModel>(
+        future: photovoltaicData,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const LoadingWidget();
+          HomePhotovoltaicModel data = snapshot.data!;
+          return Column(
+            children: [
+              HomeOverviewPhotovoltaicWidget(data: data, powerList: powerListData),
+              HomeGridPhotovoltaicWidget(data, 'home'),
+              AmapMarketWidget(powerListData)
+            ],
+          );
+        },
       );
     } else if (energyData != null) { // 储能
       widget = FutureBuilder<HomeEnergyModel>(

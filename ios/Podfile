@@ -1,9 +1,5 @@
 # Uncomment this line to define a global platform for your project
 platform :ios, '9.0'
-# platform :ios, '7.0' #手机的系统 
-# target 'Runner' do #工程名字
-#   pod 'AMap3DMap' #3D地图 SDK
-# end
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'

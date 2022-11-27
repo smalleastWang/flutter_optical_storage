@@ -4,6 +4,7 @@
         android:label="51光储"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
+        android:allowNativeHeapPointerTagging="false"
     >
         <activity
             android:name=".MainActivity"

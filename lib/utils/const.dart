@@ -21,4 +21,6 @@ class Const {
     iosKey: '91c5bad4b8f11ff33661ccbb06e93bc0'
   );
 
+  static const AMapPrivacyStatement amapPrivacyStatement = AMapPrivacyStatement(hasShow: true, hasAgree: true, hasContains: true);
+
 }

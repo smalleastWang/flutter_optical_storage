@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_optical_storage/i18n/app_localizations.dart';
 import 'package:flutter_optical_storage/models/api/home/energy_model.dart';
 import 'package:flutter_optical_storage/models/api/home/photovoltaic_model.dart';
+import 'package:flutter_optical_storage/models/api/power_station/power_station.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class HomeOverviewWidget extends StatelessWidget {
@@ -41,7 +42,14 @@ class HomeOverviewWidget extends StatelessWidget {
 
 class HomeOverviewPhotovoltaicWidget extends StatelessWidget {
   final HomePhotovoltaicModel data;
-  const HomeOverviewPhotovoltaicWidget(this.data, {Key? key }) : super(key: key);
+  final List<PowerStationModel> powerList;
+  const HomeOverviewPhotovoltaicWidget({required this.data, required this.powerList, Key? key }) : super(key: key);
+
+  get tax {
+    num totalPower = powerList.fold(0, (sum, i) => num.parse(i.nominalPower!) + sum);
+    num tax = num.parse(data.outputPower!) / totalPower;
+    return double.parse(tax.toStringAsFixed(4));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +65,9 @@ class HomeOverviewPhotovoltaicWidget extends StatelessWidget {
             radius: 60,
             lineWidth: 10,
             animation: true,
-            percent: num.parse(data.outputPower!) / 100,
+            percent: tax,
             center:  Text(
-              "${data.outputPower}%",
+              "${tax * 100}%",
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.white),
             ),
             circularStrokeCap: CircularStrokeCap.round,
