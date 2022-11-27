@@ -45,12 +45,24 @@ class PowerStationApi {
   }
   ///
   /// 设备信息
-  static Future<PowerDeviceModel> fetchDeviceInfoApi(Map<String, dynamic> params) async {
+  static Future<List<DeviceList>> fetchDeviceInfoApi(Map<String, dynamic> params) async {
     //验证通过提交数据
     Map<String, dynamic> query = {'action': 'getDeviceData'};
     query.addAll(params);
     List<dynamic> data = await CommonApi().request(query: query);
-    return PowerDeviceModel.fromJson(data.first);
+    List<PowerDeviceModel> resdata = [];
+    List<DeviceList> result = [];
+    for (var item in data) {
+      resdata.add(PowerDeviceModel.fromJson(item));
+    }
+    for (var item in resdata) {
+      for (var i in item.deviceList!) {
+        i.pType = item.type;
+        i.pId = item.id;
+        result.add(i);
+      }
+    }
+    return result;
   }
   /// 
   /// 设备实时数据

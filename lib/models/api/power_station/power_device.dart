@@ -102,6 +102,8 @@ class DeviceList {
   String? loggerNum;
   int? portId;
   int? status;
+  String? pType;
+  int? pId;
 
   DeviceList(
       {this.addr,
@@ -110,7 +112,9 @@ class DeviceList {
       this.devname,
       this.loggerNum,
       this.portId,
-      this.status});
+      this.status,
+      this.pType,
+      this.pId});
 
   DeviceList.fromJson(Map<String, dynamic> json) {
     addr = json['addr'];
@@ -120,6 +124,8 @@ class DeviceList {
     loggerNum = json['loggerNum'];
     portId = json['portId'];
     status = json['status'];
+    pType = json['pType'];
+    pId = json['pId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -131,6 +137,8 @@ class DeviceList {
     data['loggerNum'] = loggerNum;
     data['portId'] = portId;
     data['status'] = status;
+    data['pType'] = pType;
+    data['pId'] = pId;
     return data;
   }
 }
